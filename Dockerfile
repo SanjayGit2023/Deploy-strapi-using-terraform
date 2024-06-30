@@ -1,5 +1,5 @@
 # Use the official Node.js image
-FROM node:14-alpine
+FROM node:20-alpine
 
 # Set working directory
 WORKDIR /srv/strapi
@@ -7,8 +7,11 @@ WORKDIR /srv/strapi
 # Copy package.json and package-lock.json
 COPY package*.json ./
 
-# Install Strapi dependencies
-RUN npm install
+# Install the latest version of npm, delete old lockfile and node_modules, then install dependencies
+RUN npm install -g npm@latest \
+    && rm -rf node_modules package-lock.json \
+    && npm install \
+    && npm install glob@latest @koa/router@latest inflight@latest formidable@latest rimraf@latest
 
 # Copy the rest of the application code
 COPY . .
